@@ -17,7 +17,7 @@ app.use(express.json())
 // Routes
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/categories', require('./routes/categories.routes'))
-// app.use('/api/subCategories', require('./routes/subCategories'))
+app.use('/api/sub', require('./routes/sub.routes'))
 // app.use('/api/items', require('./routes/items'))
 
 async function start() {
