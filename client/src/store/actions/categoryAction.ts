@@ -1,20 +1,20 @@
-// import { toast } from "react-toastify"
 import { AppDispatch } from "../index"
 import axios from "../../axios"
 import { categorySlice } from "../slices/categorySlice"
-import { ICategory, IServerResponse } from "../../models/models"
+import { ICategory, ISubCategory, ServerResponse } from "../../models/models"
 
 // Get My Categories
 export const getCategories = () => {
     return async (dispatch: AppDispatch) => {
         dispatch(categorySlice.actions.fetching())
         try {
-            const { data } = await axios.get<IServerResponse<ICategory[]>>("categories")
+            const { data } = await axios.get<ServerResponse<ICategory[]>>("categories")
             if (data.result) {
-                dispatch(categorySlice.actions.get(data))
+                dispatch(categorySlice.actions.received(data))
+            } else if (data.message) {
+                dispatch(categorySlice.actions.fetchFailed(data))
             } else {
-                dispatch(categorySlice.actions.failed(data))
-                // toast(data.message)
+                dispatch(categorySlice.actions.serverError(data))
             }
         } catch (error) {
             dispatch(categorySlice.actions.fetchError(error as Error))
@@ -27,13 +27,13 @@ export const createCategory = (requestData: { title: string }) => {
     return async (dispatch: AppDispatch) => {
         dispatch(categorySlice.actions.fetching())
         try {
-            const { data } = await axios.post<IServerResponse<ICategory>>("categories", requestData)
+            const { data } = await axios.post<ServerResponse<ICategory>>("categories", requestData)
             if (data.result) {
-                dispatch(categorySlice.actions.create(data))
-                // toast(data.message)
+                dispatch(categorySlice.actions.created(data))
+            } else if (data.message) {
+                dispatch(categorySlice.actions.fetchFailed(data))
             } else {
-                dispatch(categorySlice.actions.failed(data))
-                // toast(data.message)
+                dispatch(categorySlice.actions.serverError(data))
             }
         } catch (error) {
             dispatch(categorySlice.actions.fetchError(error as Error))
@@ -46,13 +46,13 @@ export const removeCategory = (id: string) => {
     return async (dispatch: AppDispatch) => {
         dispatch(categorySlice.actions.fetching())
         try {
-            const { data } = await axios.delete<IServerResponse<ICategory>>(`categories/${id}`)
+            const { data } = await axios.delete<ServerResponse<ICategory>>(`categories/${id}`)
             if (data.result) {
-                dispatch(categorySlice.actions.remove(data))
-                // toast(data.message)
+                dispatch(categorySlice.actions.removed(data))
+            } else if (data.message) {
+                dispatch(categorySlice.actions.fetchFailed(data))
             } else {
-                dispatch(categorySlice.actions.failed(data))
-                // toast(data.message)
+                dispatch(categorySlice.actions.serverError(data))
             }
         } catch (error) {
             dispatch(categorySlice.actions.fetchError(error as Error))
@@ -65,13 +65,51 @@ export const updateCategory = (id: string, requestData: {newTitle: string}) => {
     return async (dispatch: AppDispatch) => {
         dispatch(categorySlice.actions.fetching())
         try {
-            const { data } = await axios.put<IServerResponse<ICategory>>(`categories/${id}`, requestData)
+            const { data } = await axios.put<ServerResponse<ICategory>>(`categories/${id}`, requestData)
             if (data.result) {
-                dispatch(categorySlice.actions.update(data))
-                // toast(data.message)
+                dispatch(categorySlice.actions.updated(data))
+            } else if (data.message) {
+                dispatch(categorySlice.actions.fetchFailed(data))
             } else {
-                dispatch(categorySlice.actions.failed(data))
-                // toast(data.message)
+                dispatch(categorySlice.actions.serverError(data))
+            }
+        } catch (error) {
+            dispatch(categorySlice.actions.fetchError(error as Error))
+        }
+    }
+}
+
+// Create New SubCategory
+export const createSubCategory = (requestData: { id: string, title: string }) => {
+    return async (dispatch: AppDispatch) => {
+        dispatch(categorySlice.actions.fetching())
+        try {
+            const { data } = await axios.post<ServerResponse<ISubCategory>>("sub", requestData)
+            if (data.result) {
+                dispatch(categorySlice.actions.subCreated(data))
+            } else if (data.message) {
+                dispatch(categorySlice.actions.fetchFailed(data))
+            } else {
+                dispatch(categorySlice.actions.serverError(data))
+            }
+        } catch (error) {
+            dispatch(categorySlice.actions.fetchError(error as Error))
+        }
+    }
+}
+
+// Remove SubCategory
+export const removeSubCategory = (id: string) => {
+    return async (dispatch: AppDispatch) => {
+        dispatch(categorySlice.actions.fetching())
+        try {
+            const { data } = await axios.delete<ServerResponse<ISubCategory>>(`sub/${id}`)
+            if (data.result) {
+                dispatch(categorySlice.actions.subRemoved(data))
+            } else if (data.message) {
+                dispatch(categorySlice.actions.fetchFailed(data))
+            } else {
+                dispatch(categorySlice.actions.serverError(data))
             }
         } catch (error) {
             dispatch(categorySlice.actions.fetchError(error as Error))

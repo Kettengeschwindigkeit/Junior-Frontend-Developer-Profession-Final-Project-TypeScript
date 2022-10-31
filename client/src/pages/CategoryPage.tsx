@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 import { ModalWindow } from "../components/common/ModalWindow"
+import { AddSubCategory } from "../components/modal-components/AddSubCategory"
 import { EditCategory } from "../components/modal-components/EditCategory"
 import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { removeCategory } from "../store/actions/categoryAction"
@@ -14,7 +15,8 @@ import { categorySlice } from "../store/slices/categorySlice"
 // import { EditCategoryPage } from "../components/modalComponents/EditCategoryPage"
 
 export const CategoryPage = () => {
-    const [showModal, setShowModal] = useState(false)
+    const [showAModalAddSub, setShowModalAddSub] = useState(false)
+    const [showAModalUpdate, setShowModalUpdate] = useState(false)
     const [title, setTitle] = useState("")
 
     // console.log(title)
@@ -50,9 +52,9 @@ export const CategoryPage = () => {
         }
     }
 
-        useEffect(() => {
-            setTitle(category.title)
-        }, [category])
+    useEffect(() => {
+        setTitle(category.title)
+    }, [category])
 
     //     useEffect(() => {
     //         dispatch(getCategoryById(params.id))
@@ -70,10 +72,10 @@ export const CategoryPage = () => {
             <div className="flex items-center justify-between">
                 <ul className="flex gap-8 m-2">
                     <li className="text-xs text-gray-600 font-bold hover:text-black">
-                        {/* //                             <button onClick={() => setShowModal(true)}>Add New SubCategory</button> */}
+                        <button onClick={() => setShowModalAddSub(true)}>Add New SubCategory</button>
                     </li>
                     <li className="text-xs text-gray-600 font-bold hover:text-black">
-                        <button onClick={() => setShowModal(true)}>Update</button>
+                        <button onClick={() => setShowModalUpdate(true)}>Update</button>
                     </li>
                     <li className="text-xs text-gray-600 font-bold hover:text-red-500">
                         <button onClick={removeCategoryHandler}>Delete</button>
@@ -83,8 +85,12 @@ export const CategoryPage = () => {
                     {title}
                 </div>
             </div>
-            {/* //             <ModalWindow active={showModal}><AddSubCategory setShowModal={setShowModal} /></ModalWindow> */}
-            <ModalWindow active={showModal}><EditCategory title={title} setOldTitle={setTitle} id={category._id} setShowModal={setShowModal} /></ModalWindow>
+            <ModalWindow active={showAModalAddSub}>
+                <AddSubCategory id={category._id} setShowModal={setShowModalAddSub} />
+            </ModalWindow>
+            <ModalWindow active={showAModalUpdate}>
+                <EditCategory title={title} setOldTitle={setTitle} id={category._id} setShowModal={setShowModalUpdate} />
+            </ModalWindow>
         </>
 
     )

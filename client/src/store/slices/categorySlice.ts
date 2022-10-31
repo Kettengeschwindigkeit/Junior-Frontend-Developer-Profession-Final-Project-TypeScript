@@ -1,27 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ICategory } from "../../models/models"
+import { ICategory, ServerResponse, ISubCategory } from "../../models/models"
 
 interface CategoryState {
     categories: ICategory[]
-    error: string
     isLoading: boolean
     status: string
-}
-
-interface PayloadSuccess<T> {
-    result: T
-    message: string
-}
-
-interface PayloadFail {
-    message: string
+    warning: string
+    error: string
 }
 
 const initialState: CategoryState = {
     categories: [],
-    error: "",
     isLoading: false,
-    status: ""
+    status: "",
+    warning: "",
+    error: ""
 }
 
 export const categorySlice = createSlice({
@@ -31,36 +24,58 @@ export const categorySlice = createSlice({
         fetching(state) {
             state.isLoading = true
         },
-        get(state, action: PayloadAction<PayloadSuccess<ICategory[]>>) {
+        fetchFailed(state, action: PayloadAction<{ message: string }>) {
             state.isLoading = false
-            state.categories = action.payload.result
-        },
-        create(state, action: PayloadAction<PayloadSuccess<ICategory>>) {
-            state.isLoading = false
-            state.categories.push(action.payload.result)
-            state.status = action.payload.message
-        },
-        remove(state, action: PayloadAction<PayloadSuccess<ICategory>>) {
-            state.isLoading = false
-            state.categories = state.categories.filter(category => category._id !== action.payload.result._id)
-            state.status = action.payload.message
-        },
-        update(state, action: PayloadAction<PayloadSuccess<ICategory>>) {
-            state.isLoading = false
-            const index = state.categories.findIndex((category) => category._id === action.payload.result._id)
-            state.categories[index] = action.payload.result
-            state.status = action.payload.message
-        },
-        failed(state, action: PayloadAction<PayloadFail>) {
-            state.isLoading = false
-            state.status = action.payload.message
-        },
-        clearStatus(state) {
-            state.status = ""
+            state.warning = action.payload.message
         },
         fetchError(state, action: PayloadAction<Error>) {
             state.isLoading = false
             state.error = action.payload.message
+        },
+        serverError(state, action: PayloadAction<{ errorMessage: string }>) {
+            state.isLoading = false
+            state.error = action.payload.errorMessage
+        },
+        received(state, action: PayloadAction<ServerResponse<ICategory[]>>) {
+            state.isLoading = false
+            state.categories = action.payload.result
+        },
+        created(state, action: PayloadAction<ServerResponse<ICategory>>) {
+            state.isLoading = false
+            state.categories.push(action.payload.result)
+            state.status = action.payload.message
+        },
+        removed(state, action: PayloadAction<ServerResponse<ICategory>>) {
+            state.isLoading = false
+            state.categories = state.categories.filter(category => category._id !== action.payload.result._id)
+            state.status = action.payload.message
+        },
+        updated(state, action: PayloadAction<ServerResponse<ICategory>>) {
+            state.isLoading = false
+            const index = state.categories.findIndex(category => category._id === action.payload.result._id)
+            state.categories[index].title = action.payload.result.title
+            state.status = action.payload.message
+        },
+        subCreated(state, action: PayloadAction<ServerResponse<ISubCategory>>) {
+            state.isLoading = false
+            const index = state.categories.findIndex(category => category._id === action.payload.result.parentCategoryId)
+            state.categories[index].subCategories.push(action.payload.result)
+            state.status = action.payload.message
+        },
+        subRemoved(state, action: PayloadAction<ServerResponse<ISubCategory>>) {
+            state.isLoading = false
+            const index = state.categories.findIndex(category => category._id === action.payload.result.parentCategoryId)
+            state.categories[index].subCategories = state.categories[index].subCategories.filter(sub => sub._id !== action.payload.result._id)
+            state.status = action.payload.message
+        },
+        statusCleared(state) {
+            state.status = ""
+        },
+        warningCleared(state) {
+            state.warning = ""
+        },
+        errorCleared(state) {
+            state.error = ""
         }
     }
 })

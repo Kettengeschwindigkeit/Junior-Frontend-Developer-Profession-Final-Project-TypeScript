@@ -49,7 +49,7 @@ router.delete('/:id', checkAuth, async (req, res) => {
 
         // await Promise.all(list.map(el => Item.deleteMany({ subCategory: (el._id).toString() })))
 
-        // await SubCategory.deleteMany({ category: req.params.id })
+        await SubCategory.deleteMany({ parentCategoryId: req.params.id })                                                                           // удаляем из базы данных все 'subCategory', принадлежащие данной 'category'
 
         await User.findByIdAndUpdate(req.userId, { $pull: { categories: req.params.id } })                                                          // обновляем 'user' и удаляем у него данную 'category' в базе данных
         res.json({ result: category, message: 'Category was deleted' })                                                                             // возвращаем удаленную 'category' и сообщение

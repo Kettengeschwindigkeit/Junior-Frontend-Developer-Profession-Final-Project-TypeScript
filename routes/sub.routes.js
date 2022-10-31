@@ -14,12 +14,29 @@ router.post("/", async (req, res) => {
         const newSubCategory = new SubCategory({ title, parentCategoryId: id })
 
         await newSubCategory.save()
-        
+
         await Category.findByIdAndUpdate(id, { $push: { subCategories: newSubCategory._id } })
 
-        res.json({ result: newSubCategory, message: "SubCategory was created" })
+        res.json({ result: newSubCategory, message: "Sub-category was created!" })
     } catch (error) {
-        res.json({ message: "Something went wrong..." })
+        res.json({ errorMessage: "Something went wrong..." })
+    }
+})
+
+// Remove SubCategory
+// http://localhost:5001/api/sub/:id
+router.delete('/:id', async (req, res) => {
+    try {
+        const subCategory = await SubCategory.findByIdAndDelete(req.params.id)
+
+        if (!subCategory) return res.json({ message: 'This sub-category doesn\'t exist' })
+
+        // await Item.deleteMany({ subCategory: req.params.id })
+
+        await Category.findByIdAndUpdate(subCategory.parentCategoryId, { $pull: { subCategories: req.params.id } })
+        res.json({ result: subCategory, message: 'Sub-category was deleted' })
+    } catch (error) {
+        res.json({ errorMessage: "Something went wrong..." })
     }
 })
 

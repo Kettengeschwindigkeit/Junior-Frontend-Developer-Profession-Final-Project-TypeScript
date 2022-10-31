@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../hooks/redux"
 import { register } from "../store/actions/authActions"
 import { Input } from "../components/common/Input"
-import { toast } from "react-toastify"
-import { authSlice } from "../store/slices/authSlice"
 
 export const RegisterPage = () => {
     const [email, setEmail] = useState("")
@@ -12,7 +10,7 @@ export const RegisterPage = () => {
     const [errorEmailMessage, setErrorEmailMessage] = useState("")
     const [errorPasswordMessage, setErrorPasswordMessage] = useState("")
 
-    const { isAuth, status } = useAppSelector(state => state.auth)
+    const { isAuth } = useAppSelector(state => state.auth)
 
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
@@ -23,7 +21,7 @@ export const RegisterPage = () => {
             dispatch(register({ email, password }))
         } else if (!email) {
             setErrorEmailMessage("Please enter your email")
-        } else if (!password) {
+        } else {
             setErrorPasswordMessage("Please enter the password")
         }
     }
@@ -33,13 +31,6 @@ export const RegisterPage = () => {
             navigate("/")
         }
     }, [isAuth, navigate])
-
-    // useEffect(() => {
-    //     if (status !== "") {
-    //         toast(status)
-    //         dispatch(authSlice.actions.clearStatus())
-    //     }
-    // }, [status])
 
     return (
         <>
