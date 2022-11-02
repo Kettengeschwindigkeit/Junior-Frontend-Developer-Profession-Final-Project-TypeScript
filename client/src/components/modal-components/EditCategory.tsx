@@ -19,6 +19,7 @@ export const EditCategory = ({ id, title, setOldTitle, setShowModal }: ModalProp
 
     // console.log(oldTitle)
     // console.log(newTitle)
+    // console.log(title)
     
     const dispatch = useAppDispatch()
 

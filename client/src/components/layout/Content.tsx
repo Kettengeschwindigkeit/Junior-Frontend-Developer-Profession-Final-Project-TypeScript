@@ -11,7 +11,7 @@ export function Content() {
         <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path=':id' element={<CategoryPage />} />
-            <Route path=':id/:id' element={<SubCategoryPage />} />
+            <Route path='sub/:id' element={<SubCategoryPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
         </Routes>

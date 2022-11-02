@@ -9,6 +9,7 @@ interface CategoryProps {
 
 export function CategoryItem({ category }: CategoryProps) {
     const [showDropdown, setShowDropdown] = useState(false)
+    const sortedSubCategories = [...category.subCategories].sort((a, b) => a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1)
 
     return (
         <li>
@@ -21,7 +22,7 @@ export function CategoryItem({ category }: CategoryProps) {
                 </button>
             </Link>
             <div>
-                {showDropdown && category.subCategories.map(sub => <SubCategoryItem key={sub._id} subCategory={sub} />)}
+                {showDropdown && sortedSubCategories.map(sub => <SubCategoryItem key={sub._id} subCategory={sub} />)}
             </div>
         </li>
     )

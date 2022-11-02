@@ -1,25 +1,11 @@
-import { useEffect, useState } from "react"
-import { toast } from "react-toastify"
-import { useAppDispatch, useAppSelector } from "../hooks/redux"
+import { useState } from "react"
+import { useAppSelector } from "../hooks/redux"
 import { ModalWindow } from "../components/common/ModalWindow"
 import { AddCategory } from "../components/modal-components/AddCategory"
-import { authSlice } from "../store/slices/authSlice"
-import { categorySlice } from "../store/slices/categorySlice"
 
 export const MainPage = () => {
     const [showModal, setShowModal] = useState(false)
-
-    const dispatch = useAppDispatch()
-
     const { isAuth } = useAppSelector(state => state.auth)
-    const { status } = useAppSelector(state => state.category)
-
-    // useEffect(() => {
-    //     if (status !== "") {
-    //         toast(status)
-    //         dispatch(categorySlice.actions.clearStatus())
-    //     }
-    // }, [status])
 
     return (
         <div>

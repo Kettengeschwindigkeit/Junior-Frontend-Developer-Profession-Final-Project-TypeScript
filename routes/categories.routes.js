@@ -2,6 +2,7 @@ const { Router } = require('express')
 const checkAuth = require('../middleware/checkAuth')
 const Category = require('../models/Category')
 const SubCategory = require('../models/SubCategory')
+const Item = require("../models/Item")
 const User = require('../models/User')
 
 const router = Router()
@@ -41,20 +42,20 @@ router.post('/', checkAuth, async (req, res) => {
 // http://localhost:5001/api/categories/:id
 router.delete('/:id', checkAuth, async (req, res) => {
     try {
-        const category = await Category.findByIdAndDelete(req.params.id)                                                                           // находим 'caetgory' по 'id' и удаляем из базы данных
+        const category = await Category.findByIdAndDelete(req.params.id)
 
-        if (!category) return res.json({ message: 'This category doesn\'t exist' })                                                                // если такой 'category' не существует, возвращаем сообщение об этом
+        if (!category) return res.json({ message: 'This category doesn\'t exist' })
 
-        // const list = await SubCategory.find({ parentCategoryId: req.params.id })                                                                   // находим список 'subCategories', принадлежащих данной 'category'
+        const list = await SubCategory.find({ parentCategoryId: req.params.id })
 
-        // await Promise.all(list.map(el => Item.deleteMany({ subCategory: (el._id).toString() })))
+        await Promise.all(list.map(el => Item.deleteMany({ parentSubId: el._id })))
 
-        await SubCategory.deleteMany({ parentCategoryId: req.params.id })                                                                           // удаляем из базы данных все 'subCategory', принадлежащие данной 'category'
+        await SubCategory.deleteMany({ parentCategoryId: req.params.id })
 
-        await User.findByIdAndUpdate(req.userId, { $pull: { categories: req.params.id } })                                                          // обновляем 'user' и удаляем у него данную 'category' в базе данных
-        res.json({ result: category, message: 'Category was deleted' })                                                                             // возвращаем удаленную 'category' и сообщение
+        await User.findByIdAndUpdate(req.userId, { $pull: { categories: req.params.id } })
+        res.json({ result: category, message: 'Category was deleted' })
     } catch (error) {
-        res.json({ message: "Something went wrong..." })                                                                                            // возвращаем сообщение если что-то пошло не так
+        res.json({ message: "Something went wrong..." })
         console.log(error)
     }
 })
@@ -63,16 +64,16 @@ router.delete('/:id', checkAuth, async (req, res) => {
 // http://localhost:5001/api/categories/:id
 router.put('/:id', checkAuth, async (req, res) => {
     try {
-        const { newTitle } = req.body                                                                                                               // получаем переданный в запросе 'title'
-        const category = await Category.findById(req.params.id)                                                                                     // находим нужную 'category' в базе данных
+        const { newTitle } = req.body
+        const category = await Category.findById(req.params.id)
 
-        category.title = newTitle                                                                                                                   // меняем текущее значение 'title' на переданное в запросе
+        category.title = newTitle
 
-        await category.save()                                                                                                                       // сохраняем обновленную 'category' в базу данных
+        await category.save()
 
-        res.json({ result: category, message: "Category was updated" })                                                                             // делаем возврат обновленной 'category' 
+        res.json({ result: category, message: "Category was updated" })
     } catch (error) {
-        res.json({ message: "Something went wrong..." })                                                                                            // возвращаем сообщение если что-то пошло не так
+        res.json({ message: "Something went wrong..." })
         console.log(error)
     }
 })

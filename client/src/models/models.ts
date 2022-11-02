@@ -30,8 +30,12 @@ export interface ISubCategory {
 }
 
 export interface IItem {
+    readonly _id: string
     title: string
     translate: string
+    createdAt: Date
+    updatedAt: Date
+    __v: number
 }
 
 export interface ServerResponse<T> {
