@@ -1,5 +1,4 @@
 import { toast } from "react-toastify"
-// import { MessageType } from "../types"
 
 export function showMessage<MessageType>(type: MessageType, status: string): void {
     switch (type) {

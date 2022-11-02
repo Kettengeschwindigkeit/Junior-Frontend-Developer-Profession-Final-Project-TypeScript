@@ -55,23 +55,12 @@ export const subCategorySlice = createSlice({
             state.subCategory = action.payload.result.sub
             state.items = action.payload.result.list
         },
-        create(state, action: PayloadAction<ServerResponse<IItem>>) {
+        createItem(state, action: PayloadAction<ServerResponse<IItem>>) {
             state.isLoading = false
             state.items.push(action.payload.result)
             state.type = "success"
             state.status = action.payload.message
         },
-        // update(state, action: PayloadAction<ServerResponse<ISubCategory>>) {
-        //     state.isLoading = false
-        //     const index = state.categories.findIndex(category => category._id === action.payload.result.parentCategoryId)
-        //     const subIndex = state.categories[index].subCategories.findIndex(sub => sub._id === action.payload.result._id)
-        //     state.categories[index].subCategories[subIndex].title = action.payload.result.title
-        //     state.subCategory = action.payload.result
-        //     console.log(state.subCategory.title)
-        //     state.subCategory.title = action.payload.result.title
-        //     state.type = "success"
-        //     state.status = action.payload.message
-        // },
         removeItem(state, action: PayloadAction<ServerResponse<IItem>>) {
             state.isLoading = false
             state.items = state.items.filter(item => item._id !== action.payload.result._id)
@@ -85,28 +74,6 @@ export const subCategorySlice = createSlice({
             state.type = "success"
             state.status = action.payload.message
         },
-        // createSub(state, action: PayloadAction<ServerResponse<ISubCategory>>) {
-        //     state.isLoading = false
-        //     const index = state.categories.findIndex(category => category._id === action.payload.result.parentCategoryId)
-        //     state.categories[index].subCategories.push(action.payload.result)
-        //     state.type = "success"
-        //     state.status = action.payload.message
-        // },
-        // removeSub(state, action: PayloadAction<ServerResponse<ISubCategory>>) {
-        //     state.isLoading = false
-        //     const index = state.categories.findIndex(category => category._id === action.payload.result.parentCategoryId)
-        //     state.categories[index].subCategories = state.categories[index].subCategories.filter(sub => sub._id !== action.payload.result._id)
-        //     state.type = "success"
-        //     state.status = action.payload.message
-        // },
-        // updateSub(state, action: PayloadAction<ServerResponse<ISubCategory>>) {
-        //     state.isLoading = false
-        //     const index = state.categories.findIndex(category => category._id === action.payload.result.parentCategoryId)
-        //     const subIndex = state.categories[index].subCategories.findIndex(sub => sub._id === action.payload.result._id)
-        //     state.categories[index].subCategories[subIndex].title = action.payload.result.title
-        //     state.type = "success"
-        //     state.status = action.payload.message
-        // },
         clearStatus(state) {
             state.status = ""
         }

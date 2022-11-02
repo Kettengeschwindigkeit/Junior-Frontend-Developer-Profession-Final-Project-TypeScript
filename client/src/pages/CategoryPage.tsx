@@ -57,6 +57,5 @@ export const CategoryPage = () => {
                 <EditCategory title={title} setOldTitle={setTitle} id={category._id} setShowModal={setShowModalUpdate} />
             </ModalWindow>
         </>
-
     )
 }

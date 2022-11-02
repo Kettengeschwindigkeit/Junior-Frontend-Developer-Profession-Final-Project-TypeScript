@@ -11,7 +11,7 @@ interface AuthResponse {
 }
 
 // Register
-export const register = (requestData: { email: string, password: string}) => {
+export const register = (requestData: { email: string, password: string }) => {
     return async (dispatch: AppDispatch) => {
         dispatch(authSlice.actions.fetching())
         try {
@@ -32,7 +32,7 @@ export const register = (requestData: { email: string, password: string}) => {
 }
 
 // Login
-export const login = (requestData: { email: string, password: string}) => {
+export const login = (requestData: { email: string, password: string }) => {
     return async (dispatch: AppDispatch) => {
         dispatch(authSlice.actions.fetching())
         try {

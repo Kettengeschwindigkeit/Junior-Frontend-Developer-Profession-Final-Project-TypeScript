@@ -31,6 +31,7 @@ export interface ISubCategory {
 
 export interface IItem {
     readonly _id: string
+    readonly parentSubId: string
     title: string
     translate: string
     createdAt: Date

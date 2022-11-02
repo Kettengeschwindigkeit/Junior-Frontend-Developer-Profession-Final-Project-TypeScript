@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
         } catch (error) {
             console.log(error)
         }
-        res.json({ result: newItem, message: "Item was created"})
+        res.json({ result: newItem, message: "Item was created" })
     } catch (error) {
         res.json({ errorMessage: "Something went wrong..." })
     }
@@ -48,7 +48,7 @@ router.delete('/:id', async (req, res) => {
         })
         res.json({ result: item, message: 'Item was deleted' })
     } catch (error) {
-        res.json({ errorMessage: "Something went wrong..."})
+        res.json({ errorMessage: "Something went wrong..." })
     }
 })
 
@@ -66,7 +66,19 @@ router.put('/:id', async (req, res) => {
 
         res.json({ result: item, message: "Item was updated" })
     } catch (error) {
-        res.json({ errorMessage: "Something went wrong..."})
+        res.json({ errorMessage: "Something went wrong..." })
+    }
+})
+
+// Get Items By Search
+// http://localhost:5001/api/items/search
+router.post("/search", async (req, res) => {
+    try {
+        const { starts_with } = req.body
+        const items = await Item.find({ "title": { $regex: '^' + starts_with } }).exec()
+        res.json({ result: items })
+    } catch (error) {
+        res.json({ message: "Something went wrong..." })
     }
 })
 

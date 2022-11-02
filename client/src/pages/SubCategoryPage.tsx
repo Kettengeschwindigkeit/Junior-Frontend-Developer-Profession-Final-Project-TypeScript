@@ -143,7 +143,7 @@ export const SubCategoryPage = () => {
     const { items } = useAppSelector(state => state.subCategory)
     const { subCategory } = useAppSelector(state => state.subCategory)
     // console.log(items)
-    console.log(subCategory)
+    // console.log(subCategory)
     // const sortedItems = [...items].sort((a, b) => a.title > b.title ? 1 : -1)
 
     const fetchSub = async () => {
@@ -171,22 +171,17 @@ export const SubCategoryPage = () => {
         try {
             if (params.id) {
                 dispatch(removeSubCategory(params.id))
-                // navigate("/")
+                navigate("/")
             } else {
                 toast.warning("Not found...")
             }
-
         } catch (error) {
             console.log(error)
         }
     }
 
-    // useEffect(() => {
-    //     fetchItems()
-    // }, [fetchItems])
-
     useEffect(() => {
-        fetchSub() 
+        fetchSub()
     }, [params.id])
 
     useEffect(() => {
@@ -215,6 +210,5 @@ export const SubCategoryPage = () => {
             {params.id && <ModalWindow active={showModal}><AddItem id={params.id} setShowModal={setShowModal} /></ModalWindow>}
             {params.id && <ModalWindow active={showAModalUpdate}><EditSubCategory title={title} id={params.id} setOldTitle={setTitle} setShowModal={setShowModalUpdate} /></ModalWindow>}
         </div>
-
     )
 }
