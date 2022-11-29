@@ -15,7 +15,7 @@ export const LoginPage = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const submitHandler = (event: React.FormEvent) => {
+    const submitHandler = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
         if (email && password) {
             dispatch(login({ email, password }))

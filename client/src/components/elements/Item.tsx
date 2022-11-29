@@ -1,16 +1,11 @@
-import { useState } from "react"
-import { useDispatch } from "react-redux"
+import React, { useState } from "react"
 import { useAppDispatch } from "../../hooks/redux"
 import { IItem } from "../../models/models"
 import { removeItem } from "../../store/actions/subCategoryActions"
 import { ModalWindow } from "../common/ModalWindow"
 import { EditItem } from "../modal-components/EditItem"
 
-interface ItemProps {
-    item: IItem
-}
-
-export const Item = ({ item }: ItemProps) => {
+export const Item: React.FunctionComponent<{ item: IItem }> = ({ item }) => {
     const [showModal, setShowModal] = useState(false)
 
     const dispatch = useAppDispatch()

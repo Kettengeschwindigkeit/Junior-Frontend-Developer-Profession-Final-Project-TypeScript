@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux"
 import { useDebounce } from "../../hooks/useDebounce"
 import { IItem, ServerResponse } from "../../models/models"
 import { authSlice } from "../../store/slices/authSlice"
+import { FoundItem } from "../elements/FoundItem"
 
 export function Header() {
     const [dropdown, setDropdown] = useState(false)
@@ -18,7 +19,7 @@ export function Header() {
 
     const { email, isAuth } = useAppSelector(state => state.auth)
 
-    const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const changeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
         setValue(event.target.value)
     }
 
@@ -29,14 +30,14 @@ export function Header() {
     }
 
     async function search() {
-        const response = await axios.post<ServerResponse<IItem[]>>("/items/search", { starts_with: value })
-        console.log(response)
+        const response = await axios.post<ServerResponse<IItem[]>>("/items/search", { value })
         setItems(response.data.result)
     }
 
-    const logoutHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const logoutHandler = (event: React.MouseEvent<HTMLButtonElement>): void => {
         event.preventDefault()
         dispatch(authSlice.actions.logout())
+        navigate("/")
         toast("Come again!")
     }
 
@@ -55,8 +56,7 @@ export function Header() {
                 <input type="text" className="h-[42px] px-4 py-2 border rounded shadow-lg focus:outline-none focus:ring focus:ring-gray-200" value={value} onChange={changeHandler} placeholder="Search..." />
                 {dropdown && <ul className="absolute h-[200px] top-[42px] left-0 right-0 bg-white shadow-md list-none overflow-y-scroll">
                     {items
-                        // .filter(item => item.title.indexOf(value) !== -1)
-                        .map(item => <li key={item._id} className="hover:text-white hover:bg-gray-300 hover:transition-colors cursor-pointer" onClick={() => closeDropdown(item)}>{item.title}</li>)
+                        .map(item => <li key={item._id} className="hover:text-white hover:bg-gray-300 hover:transition-colors cursor-pointer" onClick={() => closeDropdown(item)}><FoundItem title={item.title} startsWith={value} /></li>)
                     }
                 </ul>}
             </div>}

@@ -1,32 +1,30 @@
-import { Dispatch, SetStateAction, useState } from "react"
-import { useParams } from "react-router-dom"
+import React, { Dispatch, SetStateAction, useState } from "react"
 import { useAppDispatch } from "../../hooks/redux"
 import { createItem } from "../../store/actions/subCategoryActions"
 import { Input } from "../common/Input"
 
-interface AddItemModalProps {
+interface ModalFormProps {
     id: string
     setShowModal: Dispatch<SetStateAction<boolean>>
 }
 
-export const AddItem = ({ id, setShowModal }: AddItemModalProps) => {
+export const AddItem: React.FC<ModalFormProps> = ({ id, setShowModal }) => {
     const [title, setTitle] = useState("")
     const [translate, setTranslate] = useState("")
     const [titleErrorMessage, setTitleErrorMessage] = useState("")
     const [translateErrorMessage, setTranslateErrorMessage] = useState("")
 
     const dispatch = useAppDispatch()
-    const params = useParams()
 
-    const clearFormHandler = () => {
+    const clearFormHandler = (): void => {
         setTitle("")
         setShowModal(false)
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+        event.preventDefault()
         try {
             if (title && translate) {
-                const subCategoryId = params.id
                 dispatch(createItem({ subId: id, title, translate }))
                 setTitle("")
                 setShowModal(false)
@@ -41,7 +39,7 @@ export const AddItem = ({ id, setShowModal }: AddItemModalProps) => {
     }
 
     return (
-        <form className="mx-auto py-10" onSubmit={e => e.preventDefault()}>
+        <form className="mx-auto py-10" onSubmit={handleSubmit}>
             <div className="mb-4">
                 <Input label="Title" type="text" value={title} setValue={setTitle} errorMessage={titleErrorMessage} setErrorMessage={setTitleErrorMessage} />
             </div>
@@ -49,10 +47,10 @@ export const AddItem = ({ id, setShowModal }: AddItemModalProps) => {
                 <Input label="Translate" type="text" value={translate} setValue={setTranslate} errorMessage={translateErrorMessage} setErrorMessage={setTranslateErrorMessage} />
             </div>
             <div className="flex gap-8 items-center justify-center mt-4">
-                <button className="btn" onClick={handleSubmit}>
+                <button type="submit" className="btn">
                     Add
                 </button>
-                <button className="btn-cancel" onClick={clearFormHandler}>
+                <button type="button" className="btn-cancel" onClick={clearFormHandler}>
                     Cancel
                 </button>
             </div>

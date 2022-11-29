@@ -28,12 +28,12 @@ router.post('/', checkAuth, async (req, res) => {
         const user = await User.findById(req.userId)                                                                                              // находим 'user' по 'id'
         const newCategory = new Category({ title, userId: user._id })                                                                             // создаем 'newCategory', передаем 'title' и 'user._id' 
 
-        await newCategory.save()                                                                                                                  // сохраняем созданную 'newCategory' в базу данных
-        await User.findByIdAndUpdate(req.userId, { $push: { categories: newCategory } })                                                          // добавляем созданную 'newCategory' пользователю
+        await newCategory.save()
+        await User.findByIdAndUpdate(req.userId, { $push: { categories: newCategory } })
 
-        res.json({ result: newCategory, message: "Category was created" })                                                                        // возвращаем созданную 'newCategory' и сообщение
+        res.json({ result: newCategory, message: "Category was created" })
     } catch (error) {
-        res.json({ message: 'Something went wrong. Try it later...' })                                                                            // возвращаем сообщение если что-то пошло не так
+        res.json({ message: 'Something went wrong. Try it later...' })
         console.log(error)
     }
 })

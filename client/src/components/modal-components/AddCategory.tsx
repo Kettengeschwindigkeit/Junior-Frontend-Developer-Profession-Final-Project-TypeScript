@@ -1,29 +1,21 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { toast } from "react-toastify"
-import { useAppDispatch, useAppSelector } from "../../hooks/redux"
+import React, { Dispatch, SetStateAction, useState } from "react"
+import { useAppDispatch } from "../../hooks/redux"
 import { createCategory } from "../../store/actions/categoryAction"
-import { authSlice } from "../../store/slices/authSlice"
 import { Input } from "../common/Input"
 
-interface ModalProps {
-    setShowModal: Dispatch<SetStateAction<boolean>>
-}
-
-export const AddCategory = ({ setShowModal }: ModalProps) => {
+export const AddCategory: React.FC<{ setShowModal: Dispatch<SetStateAction<boolean>> }> = ({ setShowModal }) => {
     const [title, setTitle] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
-    const { status } = useAppSelector(state => state.category)
-
     const dispatch = useAppDispatch()
 
-    const clearFormHandler = () => {
+    const clearFormHandler = (): void => {
         setShowModal(false)
         setErrorMessage("")
         setTitle("")
     }
 
-    const submitHandler = (event: React.FormEvent) => {
+    const submitHandler = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
         try {
             if (title) {
@@ -37,13 +29,6 @@ export const AddCategory = ({ setShowModal }: ModalProps) => {
             console.log(error)
         }
     }
-
-    // useEffect(() => {
-    //     if (status !== "") {
-    //         toast(status)
-    //         dispatch(authSlice.actions.clearStatus())
-    //     }
-    // }, [status])
 
     return (
         <form className="mx-auto py-10" onSubmit={submitHandler}>

@@ -1,9 +1,6 @@
 const { Router } = require("express")
-const checkAuth = require("../middleware/checkAuth")
-const Category = require("../models/Category")
 const SubCategory = require("../models/SubCategory")
 const Item = require("../models/Item")
-const User = require("../models/User")
 
 const router = Router()
 
@@ -13,17 +10,11 @@ router.post("/", async (req, res) => {
     try {
         const { subId, title, translate } = req.body
 
-        // if (!Item) {
-        //     return res.json({ message: "Title is empty" })
-        // }
-
         const newItem = new Item({ title, translate, parentSubId: subId })
         await newItem.save()
 
         try {
-            await SubCategory.findByIdAndUpdate(subId, {
-                $push: { items: newItem._id }
-            })
+            await SubCategory.findByIdAndUpdate(subId, { $push: { items: newItem._id } })
         } catch (error) {
             console.log(error)
         }
@@ -35,18 +26,16 @@ router.post("/", async (req, res) => {
 
 // Remove Item
 // http://localhost:5001/api/items/:id
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const item = await Item.findByIdAndDelete(req.params.id)
         const subCategory = await SubCategory.findById(item.parentSubId)
         const subCategoryId = subCategory._id
 
-        if (!item) return res.json({ message: 'This item doesn\'t exist' })
+        if (!item) return res.json({ message: "This item doesn't exist" })
 
-        await SubCategory.findByIdAndUpdate(subCategoryId, {
-            $pull: { items: req.params.id }
-        })
-        res.json({ result: item, message: 'Item was deleted' })
+        await SubCategory.findByIdAndUpdate(subCategoryId, { $pull: { items: req.params.id } })
+        res.json({ result: item, message: "Item was deleted" })
     } catch (error) {
         res.json({ errorMessage: "Something went wrong..." })
     }
@@ -74,8 +63,8 @@ router.put('/:id', async (req, res) => {
 // http://localhost:5001/api/items/search
 router.post("/search", async (req, res) => {
     try {
-        const { starts_with } = req.body
-        const items = await Item.find({ "title": { $regex: '^' + starts_with } }).exec()
+        const starts_with = req.body.value
+        const items = await Item.find({ "title": { $regex: "^" + starts_with, $options: 'i' } })
         res.json({ result: items })
     } catch (error) {
         res.json({ message: "Something went wrong..." })

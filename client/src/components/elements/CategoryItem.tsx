@@ -3,11 +3,7 @@ import { Link } from "react-router-dom"
 import { ICategory } from "../../models/models"
 import { SubCategoryItem } from "./SubCategoryItem"
 
-interface CategoryProps {
-    category: ICategory
-}
-
-export function CategoryItem({ category }: CategoryProps) {
+export const CategoryItem: React.FunctionComponent<{ category: ICategory }> = ({ category }) => {
     const [showDropdown, setShowDropdown] = useState(false)
     const sortedSubCategories = [...category.subCategories].sort((a, b) => a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1)
 
