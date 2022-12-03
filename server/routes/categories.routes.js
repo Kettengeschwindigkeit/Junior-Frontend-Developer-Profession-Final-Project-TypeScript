@@ -11,11 +11,11 @@ const router = Router()
 // http://localhost:5001/api/categories
 router.get('/', checkAuth, async (req, res) => {
     try {
-        const user = await User.findById(req.userId)                                                                                              // находим 'user' по 'id'
-        const list = await Promise.all(user.categories.map((category) => Category.findById(category._id).populate('subCategories')))              // получаем все 'categories' и 'subCategories' данного 'user'
-        res.json({ result: list })                                                                                                                // возвращаем найденные 'categories'
+        const user = await User.findById(req.userId)
+        const list = await Promise.all(user.categories.map((category) => Category.findById(category._id).populate('subCategories')))
+        res.json({ result: list })
     } catch (error) {
-        res.json({ message: 'Something went wrong...' })                                                                                           // возвращаем сообщение об ошибке
+        res.json({ message: 'Something went wrong...' })
         console.log(error)
     }
 })
@@ -24,9 +24,9 @@ router.get('/', checkAuth, async (req, res) => {
 // http://localhost:5001/api/categories
 router.post('/', checkAuth, async (req, res) => {
     try {
-        const { title } = req.body                                                                                                                // получаем переданный в запросе 'title'
-        const user = await User.findById(req.userId)                                                                                              // находим 'user' по 'id'
-        const newCategory = new Category({ title, userId: user._id })                                                                             // создаем 'newCategory', передаем 'title' и 'user._id' 
+        const { title } = req.body
+        const user = await User.findById(req.userId)
+        const newCategory = new Category({ title, userId: user._id })
 
         await newCategory.save()
         await User.findByIdAndUpdate(req.userId, { $push: { categories: newCategory } })

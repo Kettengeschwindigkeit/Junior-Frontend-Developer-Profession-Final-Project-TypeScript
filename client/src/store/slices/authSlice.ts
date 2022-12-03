@@ -23,7 +23,7 @@ const initialState: AuthState = {
 
 interface PayloadSuccess {
     user: IUser
-    token: string
+    accessToken: string
     message: string
 }
 
@@ -35,29 +35,29 @@ export const authSlice = createSlice({
             state.isLoading = true
         },
         fetchFailed(state, action: PayloadAction<{ message: string }>) {
+            state.status = action.payload.message
             state.isLoading = false
             state.type = "warning"
-            state.status = action.payload.message
         },
         fetchError(state, action: PayloadAction<Error>) {
+            state.status = action.payload.message
             state.isLoading = false
             state.type = "error"
-            state.status = action.payload.message
         },
         serverError(state, action: PayloadAction<{ errorMessage: string }>) {
+            state.status = action.payload.errorMessage
             state.isLoading = false
             state.type = "error"
-            state.status = action.payload.errorMessage
         },
         loginSuccess(state, action: PayloadAction<PayloadSuccess>) {
-            state.access = action.payload.token
+            state.access = action.payload.accessToken
             state.email = action.payload.user.email
-            state.isAuth = Boolean(action.payload.token)
+            state.isAuth = Boolean(action.payload.accessToken)
+            state.status = action.payload.message
             state.isLoading = false
             state.type = "success"
-            state.status = action.payload.message
 
-            localStorage.setItem(ACCESS_KEY, action.payload.token)
+            localStorage.setItem(ACCESS_KEY, action.payload.accessToken)
             localStorage.setItem("email", action.payload.user.email)
         },
         logout(state) {

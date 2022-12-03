@@ -5,7 +5,8 @@ import { authSlice } from "../slices/authSlice"
 
 interface AuthResponse {
     user: IUser
-    token: string
+    accessToken: string
+    refreshToken: string
     message: string
     errorMessage: string
 }
@@ -16,9 +17,9 @@ export const register = (requestData: { email: string, password: string }) => {
         dispatch(authSlice.actions.fetching())
         try {
             const response = await axios.post<AuthResponse>("auth/register", requestData)
-            const { user, token, message } = response.data
-            if (user && token) {
-                dispatch(authSlice.actions.loginSuccess({ user, token, message }))
+            const { user, accessToken, message } = response.data
+            if (user && accessToken) {
+                dispatch(authSlice.actions.loginSuccess({ user, accessToken, message }))
             } else if (message) {
                 dispatch(authSlice.actions.fetchFailed({ message }))
             } else {
@@ -37,9 +38,9 @@ export const login = (requestData: { email: string, password: string }) => {
         dispatch(authSlice.actions.fetching())
         try {
             const response = await axios.post<AuthResponse>("auth/login", requestData)
-            const { user, token, message } = response.data
-            if (user && token) {
-                dispatch(authSlice.actions.loginSuccess({ user, token, message }))
+            const { user, accessToken, message } = response.data
+            if (user && accessToken) {
+                dispatch(authSlice.actions.loginSuccess({ user, accessToken, message }))
             } else if (message) {
                 dispatch(authSlice.actions.fetchFailed({ message }))
             } else {

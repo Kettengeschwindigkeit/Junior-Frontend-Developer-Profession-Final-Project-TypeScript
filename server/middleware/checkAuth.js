@@ -1,18 +1,24 @@
-const jwt = require('jsonwebtoken')
+const tokenService = require('../services/token.service')
 
 const checkAuth = (req, res, next) => {
-    const token = (req.headers.authorization || "").replace(/Bearer\s?/, "")
+    if (req.method === 'OPTIONS') {
+        return next()
+    }
 
-    if (token) {
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            req.userId = decoded.id
-            next()
-        } catch (error) {
-            return res.json({ message: "Something went wrong... Try it later" })
+    try {
+        const token = req.headers.authorization.split(' ')[1]
+
+        if (!token) {
+            return res.status(401).json({ message: "Unauthorized" })
         }
-    } else {
-        return res.json({ message: "No access!" })
+
+        const data = tokenService.validateAccess(token)
+
+        req.userId = data.id
+
+        next()
+    } catch (error) {
+        return res.status(401).json({ message: "Unauthorized" })
     }
 }
 
