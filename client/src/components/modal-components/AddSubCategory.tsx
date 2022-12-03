@@ -1,9 +1,14 @@
 import React, { Dispatch, SetStateAction, useState } from "react"
 import { useAppDispatch } from "../../hooks/redux"
-import { createCategory } from "../../store/actions/categoryAction"
+import { createSubCategory } from "../../store/actions/categoryAction"
 import { Input } from "../common/Input"
 
-export const AddCategory: React.FC<{ setShowModal: Dispatch<SetStateAction<boolean>> }> = ({ setShowModal }) => {
+interface ModalFormProps {
+    id: string
+    setShowModal: Dispatch<SetStateAction<boolean>>
+}
+
+export const AddSubCategory: React.FC<ModalFormProps> = ({ id, setShowModal }) => {
     const [title, setTitle] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
 
@@ -19,11 +24,11 @@ export const AddCategory: React.FC<{ setShowModal: Dispatch<SetStateAction<boole
         event.preventDefault()
         try {
             if (title) {
-                dispatch(createCategory({ title }))
+                dispatch(createSubCategory({ id, title }))
                 setShowModal(false)
                 setTitle("")
             } else {
-                setErrorMessage("Please enter the new category title")
+                setErrorMessage("Please enter the new sub-category title")
             }
         } catch (error) {
             console.log(error)

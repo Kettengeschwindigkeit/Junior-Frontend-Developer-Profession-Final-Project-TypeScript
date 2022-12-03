@@ -1,42 +1,31 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { toast } from "react-toastify"
-import { useAppDispatch, useAppSelector } from "../../hooks/redux"
+import { Dispatch, SetStateAction, useState } from "react"
+import { useAppDispatch } from "../../hooks/redux"
 import { updateCategory } from "../../store/actions/categoryAction"
-import { authSlice } from "../../store/slices/authSlice"
-import { categorySlice } from "../../store/slices/categorySlice"
 import { Input } from "../common/Input"
 
-interface ModalProps {
+interface ModalFormProps {
     id: string
     title: string
     setOldTitle: Dispatch<SetStateAction<string>>
     setShowModal: Dispatch<SetStateAction<boolean>>
 }
 
-export const EditCategory = ({ id, title, setOldTitle, setShowModal }: ModalProps) => {
-    // const [newTitle, setNewTitle] = useState(oldTitle)
+export const EditCategory: React.FC<ModalFormProps> = ({ id, title, setOldTitle, setShowModal }) => {
     const [errorMessage, setErrorMessage] = useState("")
 
-    // console.log(oldTitle)
-    // console.log(newTitle)
-    
     const dispatch = useAppDispatch()
 
-    const { status } = useAppSelector(state => state.category)
-
-    const clearFormHandler = () => {
+    const clearFormHandler = (): void => {
         setShowModal(false)
         setErrorMessage("")
-        // setNewTitle("")
     }
 
-    const submitHandler = (event: React.FormEvent) => {
+    const submitHandler = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
         try {
             if (title) {
                 dispatch(updateCategory(id, { newTitle: title }))
                 setShowModal(false)
-                // setNewTitle("")
             } else {
                 setErrorMessage("Please enter the new category title")
             }
@@ -44,13 +33,6 @@ export const EditCategory = ({ id, title, setOldTitle, setShowModal }: ModalProp
             console.log(error)
         }
     }
-
-    // useEffect(() => {
-    //     if (status !== "") {
-    //         toast(status)
-    //         dispatch(categorySlice.actions.clearStatus())
-    //     }
-    // }, [status])
 
     return (
         <form className="mx-auto py-10" onSubmit={submitHandler}>

@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction } from "react"
 
 export interface IUser {
-    _id: string
+    readonly _id: string
     email: string
     password: string
     categories: ICategory[]
@@ -11,27 +10,37 @@ export interface IUser {
 }
 
 export interface ICategory {
-    _id: string
+    readonly _id: string
+    readonly userId: string
     title: string
     subCategories: ISubCategory[]
+    createdAt: Date
+    updatedAt: Date
+    __v: number
 }
 
 export interface ISubCategory {
-    _id: string
+    readonly _id: string
+    readonly parentCategoryId: string
     title: string
     items: IItem[]
+    createdAt: Date
+    updatedAt: Date
+    __v: number
 }
 
 export interface IItem {
+    readonly _id: string
+    readonly parentSubId: string
     title: string
     translate: string
+    createdAt: Date
+    updatedAt: Date
+    __v: number
 }
 
-export interface IServerResponse<T> {
+export interface ServerResponse<T> {
     result: T
     message: string
+    errorMessage: string
 }
-
-// export interface IAddModalChildProps {
-//     setShowModal: Dispatch<SetStateAction<boolean>>
-// }

@@ -1,36 +1,76 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
-import { useAppDispatch, useAppSelector } from '../../hooks/redux'
-import { authSlice } from '../../store/slices/authSlice'
+import React, { ChangeEvent, useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
+import axios from "../../axios/index"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux"
+import { useDebounce } from "../../hooks/useDebounce"
+import { IItem, ServerResponse } from "../../models/models"
+import { authSlice } from "../../store/slices/authSlice"
+import { FoundItem } from "../elements/FoundItem"
 
 export function Header() {
+    const [dropdown, setDropdown] = useState(false)
+    const [items, setItems] = useState<IItem[]>([])
+    const [value, setValue] = useState("")
+
+    const debounced = useDebounce<string>(value)
     const dispatch = useAppDispatch()
-    
+    const navigate = useNavigate()
+
     const { email, isAuth } = useAppSelector(state => state.auth)
 
-    const logoutHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const changeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
+        setValue(event.target.value)
+    }
+
+    const closeDropdown = (item: IItem) => {
+        navigate(`sub/${item.parentSubId}`)
+        setDropdown(false)
+        setValue("")
+    }
+
+    async function search() {
+        const response = await axios.post<ServerResponse<IItem[]>>("/items/search", { value })
+        setItems(response.data.result)
+    }
+
+    const logoutHandler = (event: React.MouseEvent<HTMLButtonElement>): void => {
         event.preventDefault()
         dispatch(authSlice.actions.logout())
+        navigate("/")
         toast("Come again!")
     }
+
+    useEffect(() => {
+        if (debounced.length >= 2) {
+            search().then(() => setDropdown(true))
+        } else {
+            setDropdown(false)
+        }
+    }, [debounced])
 
     return (
         <nav className="flex justify-between items-center bg-gray-300 shadow-md">
             <Link to="/" className="m-2 px-4 text-gray-600 font-bold hover:text-black">Wordbook</Link>
-            <div>
-                {isAuth ?
-                    <div className="flex-col">
-                        <div className="flex justify-end">
-                            <button className="btn m-2" onClick={logoutHandler}>Sign Out</button>
-                        </div>
-                        <div className="flex justify-end text-xs text-gray-500 font-bold">
-                            <span className="p-2">{email}</span>
-                        </div>
+            {isAuth && <div className="relative">
+                <input type="text" className="h-[42px] px-4 py-2 border rounded shadow-lg focus:outline-none focus:ring focus:ring-gray-200" value={value} onChange={changeHandler} placeholder="Search..." />
+                {dropdown && <ul className="absolute h-[200px] top-[42px] left-0 right-0 bg-white shadow-md list-none overflow-y-scroll">
+                    {items
+                        .map(item => <li key={item._id} className="hover:text-white hover:bg-gray-300 hover:transition-colors cursor-pointer" onClick={() => closeDropdown(item)}><FoundItem title={item.title} startsWith={value} /></li>)
+                    }
+                </ul>}
+            </div>}
+            {isAuth ?
+                <div className="flex-col">
+                    <div className="flex justify-end">
+                        <button className="btn m-2" onClick={logoutHandler}>Sign Out</button>
                     </div>
-                    : <Link to="/login"><button className="btn m-4">Sign In</button></Link>
-                }
-            </div>
+                    <div className="flex justify-end text-xs text-gray-500 font-bold">
+                        <span className="p-2">{email}</span>
+                    </div>
+                </div>
+                : <Link to="/login"><button className="btn m-4">Sign In</button></Link>
+            }
         </nav>
     )
 }

@@ -1,4 +1,3 @@
-import React from "react"
 import { Route, Routes } from "react-router-dom"
 import { CategoryPage } from "../../pages/CategoryPage"
 import { LoginPage } from "../../pages/LoginPage"
@@ -9,9 +8,9 @@ import { SubCategoryPage } from "../../pages/SubCategoryPage"
 export function Content() {
     return (
         <Routes>
-            <Route path="/" element={<MainPage />} />
+            <Route index element={<MainPage />} />
             <Route path=':id' element={<CategoryPage />} />
-            <Route path=':id/:id' element={<SubCategoryPage />} />
+            <Route path='sub/:id' element={<SubCategoryPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
         </Routes>

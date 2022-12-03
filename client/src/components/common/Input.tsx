@@ -10,7 +10,7 @@ interface InputProps {
 }
 
 export const Input = ({ label, type, value, errorMessage, setValue, setErrorMessage }: InputProps) => {
-    
+
     const changeHnadler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value)
         setErrorMessage("")

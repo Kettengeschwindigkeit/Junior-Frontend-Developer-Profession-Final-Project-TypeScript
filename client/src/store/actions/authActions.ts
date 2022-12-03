@@ -3,27 +3,28 @@ import { IUser } from "../../models/models"
 import { AppDispatch } from "../index"
 import { authSlice } from "../slices/authSlice"
 
-interface AuthRequest {
-    email: string
-    password: string
-}
-
 interface AuthResponse {
     user: IUser
-    token: string
+    accessToken: string
+    refreshToken: string
     message: string
+    errorMessage: string
 }
 
-export const register = (data: AuthRequest) => {
+// Register
+export const register = (requestData: { email: string, password: string }) => {
     return async (dispatch: AppDispatch) => {
         dispatch(authSlice.actions.fetching())
         try {
-            const response = await axios.post<AuthResponse>("auth/register", data)
-            const { user, token, message } = response.data
-            if (user && token) {
-                dispatch(authSlice.actions.loginSuccess({ user, token, message }))
+            const response = await axios.post<AuthResponse>("auth/register", requestData)
+            const { user, accessToken, message } = response.data
+            if (user && accessToken) {
+                dispatch(authSlice.actions.loginSuccess({ user, accessToken, message }))
+            } else if (message) {
+                dispatch(authSlice.actions.fetchFailed({ message }))
             } else {
-                dispatch(authSlice.actions.loginFailed({ message }))
+                const { errorMessage } = response.data
+                dispatch(authSlice.actions.serverError({ errorMessage }))
             }
         } catch (error) {
             dispatch(authSlice.actions.fetchError(error as Error))
@@ -31,16 +32,20 @@ export const register = (data: AuthRequest) => {
     }
 }
 
-export const login = (data: AuthRequest) => {
+// Login
+export const login = (requestData: { email: string, password: string }) => {
     return async (dispatch: AppDispatch) => {
         dispatch(authSlice.actions.fetching())
         try {
-            const response = await axios.post<AuthResponse>("auth/login", data)
-            const { user, token, message } = response.data
-            if (user && token) {
-                dispatch(authSlice.actions.loginSuccess({ user, token, message }))
+            const response = await axios.post<AuthResponse>("auth/login", requestData)
+            const { user, accessToken, message } = response.data
+            if (user && accessToken) {
+                dispatch(authSlice.actions.loginSuccess({ user, accessToken, message }))
+            } else if (message) {
+                dispatch(authSlice.actions.fetchFailed({ message }))
             } else {
-                dispatch(authSlice.actions.loginFailed({ message }))
+                const { errorMessage } = response.data
+                dispatch(authSlice.actions.serverError({ errorMessage }))
             }
         } catch (error) {
             dispatch(authSlice.actions.fetchError(error as Error))

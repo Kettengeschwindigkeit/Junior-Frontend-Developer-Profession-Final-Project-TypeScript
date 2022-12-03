@@ -8,6 +8,7 @@ dotenv.config()
 
 //Constants
 const PORT = process.env.PORT
+const DB_URL = process.env.DB_URL
 const DB_NAME = process.env.DB_NAME
 
 // Middlewares
@@ -18,11 +19,11 @@ app.use(express.json())
 app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/categories', require('./routes/categories.routes'))
 app.use('/api/sub', require('./routes/sub.routes'))
-// app.use('/api/items', require('./routes/items'))
+app.use('/api/items', require('./routes/items.routes'))
 
 async function start() {
     try {
-        await mongoose.connect(`mongodb://localhost:27017/${DB_NAME}`)
+        await mongoose.connect(`${DB_URL}/${DB_NAME}`)
         app.listen(PORT, () => console.log(`Server has been started on ${PORT} port...`))
     } catch (error) {
         console.log(error)
