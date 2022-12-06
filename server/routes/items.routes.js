@@ -1,4 +1,5 @@
 const { Router } = require("express")
+const checkAuth = require('../middleware/checkAuth')
 const SubCategory = require("../models/SubCategory")
 const Item = require("../models/Item")
 
@@ -6,7 +7,7 @@ const router = Router()
 
 // Create Item 
 // http://localhost:5001/api/items
-router.post("/", async (req, res) => {
+router.post("/", checkAuth, async (req, res) => {
     try {
         const { subId, title, translate } = req.body
 
@@ -26,7 +27,7 @@ router.post("/", async (req, res) => {
 
 // Remove Item
 // http://localhost:5001/api/items/:id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", checkAuth, async (req, res) => {
     try {
         const item = await Item.findByIdAndDelete(req.params.id)
         const subCategory = await SubCategory.findById(item.parentSubId)
@@ -43,7 +44,7 @@ router.delete("/:id", async (req, res) => {
 
 // Update Item
 // http://localhost:5001/api/items/:id
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuth, async (req, res) => {
     try {
         const { newTitle, newTranslate } = req.body
         const item = await Item.findById(req.params.id)

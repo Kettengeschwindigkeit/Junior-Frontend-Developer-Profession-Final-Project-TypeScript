@@ -1,4 +1,5 @@
 const { Router } = require('express')
+const checkAuth = require('../middleware/checkAuth')
 const Category = require('../models/Category')
 const SubCategory = require('../models/SubCategory')
 const Item = require("../models/Item")
@@ -7,7 +8,7 @@ const router = Router()
 
 // Create SubCategory 
 // http://localhost:5001/api/sub
-router.post("/", async (req, res) => {
+router.post("/", checkAuth, async (req, res) => {
     try {
         const { id, title } = req.body
         const newSubCategory = new SubCategory({ title, parentCategoryId: id })
@@ -24,7 +25,7 @@ router.post("/", async (req, res) => {
 
 // Remove SubCategory
 // http://localhost:5001/api/sub/:id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAuth, async (req, res) => {
     try {
         const subCategory = await SubCategory.findByIdAndDelete(req.params.id)
 
@@ -41,7 +42,7 @@ router.delete('/:id', async (req, res) => {
 
 // Update SubCategory
 // http://localhost:5001/api/sub/:id
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuth, async (req, res) => {
     try {
         const { newTitle } = req.body
         const subCategory = await SubCategory.findById(req.params.id)
@@ -58,7 +59,7 @@ router.put('/:id', async (req, res) => {
 
 // Get SubCategory By Id
 // http://localhost:5001/api/sub/:id
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkAuth, async (req, res) => {
     try {
         const sub = await SubCategory.findById(req.params.id)
         const list = await Promise.all(sub.items.map(item => Item.findById(item)))

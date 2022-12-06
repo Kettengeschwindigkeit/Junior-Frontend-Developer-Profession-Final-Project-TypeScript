@@ -19,14 +19,14 @@ router.post('/register',
             const errors = validationResult(req)
 
             if (!errors.isEmpty()) {
-                return res.status(400).json({ error: errors.array(), message: errors.errors[0].msg })
+                return res.json({ error: errors.array(), message: errors.errors[0].msg })
             }
 
             const { email, password } = req.body
             const isUsed = await User.findOne({ email })
 
             if (isUsed) {
-                return res.status(400).json({ message: "This email is already exist!" })
+                return res.json({ message: "This email is already exist!" })
             }
 
             const salt = bcrypt.genSaltSync(10)
@@ -56,7 +56,7 @@ router.post('/login',
             const errors = validationResult(req)
 
             if (!errors.isEmpty()) {
-                return res.status(400).json({ error: errors.array(), message: errors.errors[0].msg })
+                return res.json({ error: errors.array(), message: errors.errors[0].msg })
             }
 
             const { email, password } = req.body
@@ -69,7 +69,7 @@ router.post('/login',
             const isPasswordCorrect = await bcrypt.compare(password, user.password)
 
             if (!isPasswordCorrect) {
-                return res.status(400).json({ message: "Wrong password" })
+                return res.json({ message: "Wrong password" })
             }
 
             const tokens = tokenService.generate({ id: user._id })
