@@ -18,10 +18,11 @@ export const MainPage = () => {
                     </div>
                     <div className="text-sm text-gray-600 font-bold">
                         Fullstack Single Page Application using&nbsp;
-                        <a href="https://reactjs.org" className="hover:text-blue-800" target="_blank">React,</a>&nbsp;
+                        <a href="https://reactjs.org" className="hover:text-blue-800" target="_blank">ReactJS,</a>&nbsp;
                         <a href="https://www.typescriptlang.org" className="hover:text-blue-500" target="_blank">TypeScript,</a>&nbsp;
                         <a href="https://nodejs.org/en" className="hover:text-green-700" target="_blank">NodeJS,</a>&nbsp;
                         <a href="https://expressjs.com" className="hover:text-yellow-500" target="_blank">ExpressJS,</a>&nbsp;
+                        <a href="https://www.mongodb.com/" className="hover:text-green-800" target="_blank">MongoDB,</a>&nbsp;
                         <a href="https://redux-toolkit.js.org" className="hover:text-indigo-600" target="_blank">Redux-Toolkit,</a>&nbsp;
                         <a href="https://tailwindcss.com" className="hover:text-cyan-500" target="_blank">TailwindCSS</a>&nbsp;stack
                     </div>
